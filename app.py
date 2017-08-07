@@ -53,7 +53,7 @@ def validate_post(post_data):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template('home.html')
+    return json.dumps('{}')
 
 @app.route('/api/contacts', methods=['GET', 'POST'])
 def contacts():
@@ -64,7 +64,9 @@ def contacts():
         elif request.method == 'POST':
             post_data = request.get_json()
             if not validate_post(post_data):
-                return json.dumps('{data:error}')
+                response = Response(json.dumps({"status":"error"}), mimetype='application/json')
+                response.status_code = 400
+                return response
             data.contacts.append(request.get_json())
             return json.dumps(data.contacts)
 
